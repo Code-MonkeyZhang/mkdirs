@@ -4,6 +4,10 @@
 
 ## Why you need it 
 Have you ever embarked on a new project, only to find yourself tediously right-clicking to create each file and folder one by one? 🖱️ Or perhaps you've encountered someone else's project with a file management system that seemed like a complete mess? 📂🔥 This is where mkdirs steps in to save the day! 💡🚀
+<img width="831" alt="image" src="https://github.com/Code-MonkeyZhang/mkdirs/assets/56613491/845e6a1b-2270-400b-954b-5b2a4dd9e6f8">
+<img width="245" alt="image" src="https://github.com/Code-MonkeyZhang/mkdirs/assets/56613491/d70dc0e8-0302-4d78-aad1-e1850b87b2f4">
+
+
 
 ## How to Run
 ### Step 1: Clone the Repository
