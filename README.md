@@ -7,6 +7,13 @@ Have you ever embarked on a new project, only to find yourself tediously right-c
 <img width="831" alt="image" src="https://github.com/Code-MonkeyZhang/mkdirs/assets/56613491/845e6a1b-2270-400b-954b-5b2a4dd9e6f8">
 <img width="245" alt="image" src="https://github.com/Code-MonkeyZhang/mkdirs/assets/56613491/d70dc0e8-0302-4d78-aad1-e1850b87b2f4">
 
+1. **Start with Names:** Begin by typing the name of your first file or directory. Press `Enter` to confirm.
+
+2. **Set Hierarchy with Tab:** Utilize the `Tab` key to indicate the hierarchy levels for your structure. Each `Tab` press nests the next item deeper in the structure.
+
+3. **Undo with Delete:** Made a mistake? Simply press `Delete` to remove the last entered item.
+
+4. **Build Your Structure:** Continue adding the names of files or directories, confirming with `Enter` and setting their position in the hierarchy with `Tab`. Once you're done, `mkdirs` will create the directory and file structure as you've outlined.
 
 
 ## How to Run
