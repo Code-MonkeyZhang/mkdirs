@@ -7,9 +7,9 @@
 namespace fs = std::filesystem;
 
 // Utility function to determine if a path represents a directory (does not have an extension)
-bool isDirectory(const fs::path &path)
+bool isDirectory(const std::string &pathStr)
 {
-    return path.extension().empty();
+    return !pathStr.empty() && pathStr.back() == '/';
 }
 
 // Function to create a file or directory, depending on whether the path has an extension
