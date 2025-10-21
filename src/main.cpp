@@ -33,64 +33,76 @@ void CreateStruct(std::vector<std::pair<int, fs::path>> &pairs, const fs::path &
     std::vector<std::pair<int, fs::path>> pathStack{};
 
     for (auto &current_pair : pairs)
-    { // use & to refer to the original pair
+    {
         int current_tab = current_pair.first;
         fs::path filename = current_pair.second;
         fs::path newPath;
 
         if (current_tab == 0) // If the current_tab is 0, create the file or directory in the root path
         {
-            newPath = rootPath / filename; // cpp allows us to use / to concatenate paths, adopt the platform-specific separator
+            newPath = rootPath / filename;
             createFileOrDir(newPath);
-            current_pair.second = newPath; // Update with the new path
+            current_pair.second = newPath; // Update with whole absolute path
 
             if (isDirectory(current_pair.second)) // If the current pair is a directory, push it to the stack
             {
-                pathStack.push_back(current_pair); // Push the new path to the stack
+                pathStack.push_back(current_pair);
             }
         }
         else
         {
-            bool foundPreDir = false;
-            int stack_index = pathStack.size()-1;
-            // search the stack upwards to find parent directory
-            // start from previous stack (current_tab-1), stop when predir is found
-
-            while (foundPreDir == false)
+            // 如果 pathStack 为空，自动将 tab 调整为 0
+            if (pathStack.empty())
             {
-                auto upper_pair = pathStack[stack_index];
-                // if upper_pair is dir and its tab == current tab-1, indicate it's the parent dir
-                if (upper_pair.first == (current_tab - 1) && isDirectory(upper_pair.second))
+                std::cout << "Warning: No parent directory found for '" << filename
+                          << "' (tab=" << current_tab << "), creating at root level (tab=0)" << std::endl;
+                current_tab = 0;
+                current_pair.first = 0;
+
+                // 在根目录创建
+                newPath = rootPath / filename;
+                createFileOrDir(newPath);
+                current_pair.second = newPath;
+
+                if (isDirectory(current_pair.second))
                 {
-                    newPath = upper_pair.second / filename;
-                    createFileOrDir(newPath);
-                    current_pair.second = newPath.string(); // Update with the new path
-                    foundPreDir = true;
-
-                    // if the current pair is a directory, push it to the stack
-                    if (isDirectory(current_pair.second))
-                    {
-                        pathStack.push_back(current_pair);
-                    }
+                    pathStack.push_back(current_pair);
                 }
-
-                if (stack_index == 0)
-                {
-                    break;
-                }
-
-                stack_index--;
             }
-
-            if (!foundPreDir)
+            else
             {
-                std::cerr << "Invalid input: Couldn't find a directory for " << filename << std::endl;
-                // Handle invalid input as needed
+                bool foundPreDir = false;
+                int stack_index = pathStack.size() - 1; // 获取 pathStack 最后一个元素的索引号
+
+                while (foundPreDir == false && stack_index >= 0)
+                {
+                    auto upper_pair = pathStack[stack_index];
+                    // 往上找index小于current tab的dir, 那个就是自己的parent dir
+                    if (upper_pair.first < current_tab && isDirectory(upper_pair.second))
+                    {
+                        newPath = upper_pair.second / filename;
+                        createFileOrDir(newPath);
+                        current_pair.second = newPath.string(); // Update with the new path
+                        foundPreDir = true;
+
+                        // if the current pair is a directory, push it to the stack
+                        if (isDirectory(current_pair.second))
+                        {
+                            pathStack.push_back(current_pair);
+                        }
+                    }
+
+                    if (stack_index == 0)
+                    {
+                        break;
+                    }
+
+                    stack_index--;
+                }
             }
         }
     }
 }
-
 
 int main()
 {
@@ -99,10 +111,10 @@ int main()
 
     std::cout << "Enter directory and file structure (press Enter on a blank line to finish):" << std::endl;
 
-    // Read input from the user
     while (true)
     {
-        std::getline(std::cin, line);
+        std::getline(std::cin, line); // Read input from the user
+
         if (line.empty())
         {
             // if User entered a blank line, stop reading input
@@ -110,37 +122,18 @@ int main()
         }
 
         int tabCount = 0;
-        // Count leading tabs to determine level
-        // if the line is a file or directory，and it starts with a tab
-        // count # of tabs in loop
         while (!line.empty() && line[0] == '\t')
         {
+            // if user input an TAB, count it
             tabCount++;
-            line = line.substr(1);
+            line = line.substr(1); // remove tab, then extract filename
         }
-        lines.push_back({tabCount, (fs::path)line});
+        lines.push_back({tabCount, (fs::path)line}); // store filename & tab count in vector
     }
 
-    for (const auto &line : lines)
-    {
-        std::cout << line.first << " " << line.second << std::endl;
-    }
+    fs::path rootPath = fs::current_path(); // get current directory
 
-
-    // Assuming the tool runs in the current directory
-    fs::path rootPath = fs::current_path();
-    // Create the directory and file structure after collecting all inputs
-
-    
-
-    // CreateStruct(lines1, rootPath);
-    // CreateStruct(lines2, rootPath);
-    // CreateStruct(lines3, rootPath);
-    // CreateStruct(lines4, rootPath);
-    // CreateStruct(lines5, rootPath);
-    // CreateStruct(lines6, rootPath);
-    // CreateStruct(lines7, rootPath);
-    // CreateStruct(lines8, rootPath);
+    // Create file structure in root
     CreateStruct(lines, rootPath);
     std::cout << "Directories and files created successfully." << std::endl;
     return 0;
